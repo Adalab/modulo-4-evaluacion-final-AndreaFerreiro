@@ -79,4 +79,23 @@ server.put ('/api/recetas/:id', async (req, res) => {
       message: error
     })
   }
+});
+server.delete('/api/recetas/:id', async (req, res) => {
+  const idRecipe = req.params.id;
+  try{
+    const sql = 'DELETE FROM recetas WHERE id = ?';
+    const conn = await getConnection();
+    const [results] = await conn.query(sql, idRecipe);
+    conn.end();
+    res.json({
+      success:true,
+      id: idRecipe
+    })
+  }
+  catch(error){
+    res.json({
+      success:false,
+      message: "Ha ocurrido un error"
+    })
+  }
 })
