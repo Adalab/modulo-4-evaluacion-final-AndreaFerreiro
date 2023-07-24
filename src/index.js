@@ -23,7 +23,7 @@ const port = process.env.PORT || 4500;
 server.listen(port, () => {
   console.log(`Ya se ha arrancado nuestro servidor: http://localhost:${port}/`);
 });
-server.get ('/api/recetas', async (req,res) => {
+server.get ('/recetas', async (req,res) => {
   const select = 'SELECT * FROM recetas';
   const conn = await getConnection();
   const [results] = await conn.query(select);
@@ -33,14 +33,14 @@ server.get ('/api/recetas', async (req,res) => {
       "results": results 
    });
 });
-server.get ('/api/recetas/:id', async (req,res) => {
+server.get ('/recetas/:id', async (req,res) => {
   const idRecipe = req.params.id;
   const select = 'SELECT * FROM recetas WHERE id = ?';
   const conn = await getConnection();
   const [results] = await conn.query(select, idRecipe);
   res.json(results[0]);
 });
-server.post ('/api/recetas', async (req,res) => {
+server.post ('/recetas', async (req,res) => {
   const newRecipe = req.body;
   try{
     const insert = 'INSERT INTO recetas (nombre, ingredientes, instrucciones) VALUES (?,?,?)';
@@ -61,7 +61,7 @@ server.post ('/api/recetas', async (req,res) => {
     })
   }
 });
-server.put ('/api/recetas/:id', async (req, res) => {
+server.put ('/recetas/:id', async (req, res) => {
   const idRecipe= req.params.id;
   const {nombre, ingredientes, instrucciones} = req.body;
   try{
@@ -80,7 +80,7 @@ server.put ('/api/recetas/:id', async (req, res) => {
     })
   }
 });
-server.delete('/api/recetas/:id', async (req, res) => {
+server.delete('/recetas/:id', async (req, res) => {
   const idRecipe = req.params.id;
   try{
     const sql = 'DELETE FROM recetas WHERE id = ?';
