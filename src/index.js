@@ -23,12 +23,12 @@ const port = process.env.PORT || 4500;
 server.listen(port, () => {
   console.log(`Ya se ha arrancado nuestro servidor: http://localhost:${port}/`);
 });
-server.get ('api/recetas', async (req,res) => {
+server.get ('/api/recetas', async (req,res) => {
   const select = 'SELECT * FROM recetas';
   const conn = await getConnection();
   const [results] = await conn.query(select);
   res.json({
-      "info": { "count": numOfElements},
+      "info": { "count": results.length},
       "results": results 
    });
 })
