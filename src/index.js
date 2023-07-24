@@ -6,7 +6,8 @@ const server = express();
 server.use(cors());
 server.use(express.json({limit: "25mb"}));
 server.set('view engine', 'ejs');
-
+const jwt = require('jsonwebtoken'); 
+const bcrypt = require("bcrypt");
 async function getConnection() {
   const connection = await mysql.createConnection(
     {
