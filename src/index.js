@@ -10,10 +10,10 @@ server.set('view engine', 'ejs');
 async function getConnection() {
   const connection = await mysql.createConnection(
     {
-      host: process.env.DB_HOST || "localhost",
-      user: process.env.DB_USER || "root",
+      host: process.env.DB_HOST || "sql.freedb.tech",
+      user: process.env.DB_USER || "freedb_AndreaFerreiro",
       password: process.env.DB_PASS, 
-      database: process.env.DB_NAME || "Clase",
+      database: process.env.DB_NAME || "freedb_recetas_DB",
     }
   );
   connection.connect();
@@ -23,3 +23,12 @@ const port = process.env.PORT || 4500;
 server.listen(port, () => {
   console.log(`Ya se ha arrancado nuestro servidor: http://localhost:${port}/`);
 });
+server.get ('api/recetas', async (req,res) => {
+  const select = 'SELECT * FROM recetas';
+  const conn = await getConnection();
+  const [results] = await conn.query(select);
+  res.json({
+      "info": { "count": numOfElements},
+      "results": results 
+   });
+})
