@@ -27,6 +27,7 @@ server.get ('/api/recetas', async (req,res) => {
   const select = 'SELECT * FROM recetas';
   const conn = await getConnection();
   const [results] = await conn.query(select);
+  conn.end();
   res.json({
       "info": { "count": results.length},
       "results": results 
@@ -38,4 +39,25 @@ server.get ('/api/recetas/:id', async (req,res) => {
   const conn = await getConnection();
   const [results] = await conn.query(select, idRecipe);
   res.json(results[0]);
-})
+});
+server.post ('/api/recetas', async (req,res) => {
+  const newRecipe = req.body;
+  try{
+    const insert = 'INSERT INTO recetas (nombre, ingredientes, instrucciones) VALUES (?,?,?)';
+    const conn =await getConnection();
+    const [results] = await conn.query(insert, [newRecipe.nombre, newRecipe.ingredientes, newRecipe.instrucciones]);
+    conn.end();
+    console.log(results);
+    res.json({
+      success: true,
+      id: results.insertId
+    })
+  }
+  catch(error){
+    console.log(error);
+    res.json({
+      success: false,
+      message: 'No se ha podido añadir la receta'
+    })
+  }
+});
