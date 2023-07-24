@@ -31,4 +31,11 @@ server.get ('/api/recetas', async (req,res) => {
       "info": { "count": results.length},
       "results": results 
    });
+});
+server.get ('/api/recetas/:id', async (req,res) => {
+  const idRecipe = req.params.id;
+  const select = 'SELECT * FROM recetas WHERE id = ?';
+  const conn = await getConnection();
+  const [results] = await conn.query(select, idRecipe);
+  res.json(results[0]);
 })
