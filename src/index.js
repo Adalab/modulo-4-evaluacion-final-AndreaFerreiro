@@ -99,4 +99,51 @@ server.delete('/recetas/:id', async (req, res) => {
       message: "Ha ocurrido un error"
     })
   }
+});
+server.post('/registro' , async (req,res) => {
+  const username = req.body.nombre;
+  const email = req.body.email;
+  const password = req.body.password;
+  const passwordHash = await bcrypt.hash(password, 10)
+  try{
+    const sql = "INSERT INTO usuarios (nombre,email,password) VALUES (?,?,?)";
+    const connection = await getConnection();
+    const [results,] = await connection.query(sql,[username,email,passwordHash]);
+    connection.end();
+    res.json({
+      success: true, 
+      token: passwordHash, 
+      id:results.insertId
+    })
+  }
+  catch(error){
+    res.json({
+      success: false,
+      message: error
+    })
+  }
+});
+server.post ('/login', async (req,res)=> {
+  const user = req.body;
+  const select = 'SELECT * FROM usuarios WHERE email= ?';
+  const conn = await getConnection();
+  const [results] = await conn.query(select, user.email);
+  conn.end();
+  if(results.length !== 1){
+    res.json({
+      success: false,
+      error: 'El email o contraseña no son correctos'
+    })
+    return
+  }
+  if (!await bcrypt.compare(user.password, results[0].password)){
+    res.json({
+      success: false,
+      error: 'El email o contraseña no son correctos'
+    })
+    return
+  }
+  res.json({
+    success: true
+  })
 })
